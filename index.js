@@ -18,12 +18,12 @@ switch (os.platform()) {
 
     case 'darwin':
     case 'sunos':
-        _getSerialNumber = require('./lib/unix.js');
+        _getSerialNumber = require('./lib/macosx.js');
         break;
         
     default:
-        console.warn("node-HddSerialNumber: Unkown os.platform(), defaulting to `unix'.");
-        _getSerialNumber = require('./lib/unix.js');
+        console.warn("node-HddSerialNumber: Unkown os.platform(), defaulting to `linux'.");
+        _getSerialNumber = require('./lib/linux.js');
         break;
 
 }
