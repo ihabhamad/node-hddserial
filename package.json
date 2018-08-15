@@ -1,0 +1,32 @@
+{
+  "name": "hddserial",
+  "version": "0.0.1",
+  "description": "Get the HDD,SDD Serial Number.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scravy/node-hddserial.git"
+  },
+  "keywords": [
+    "hdd",
+    "sdd",
+    "hdd info",
+    "sdd info",
+    "hard disk info",
+    "hdd serialnumber",
+    "sdd serialnumber",
+    "hard disk serialnumber",
+    "hdd serial",
+    "sdd serial",
+    "hard disk serial"
+  ],
+  "author": "Ihab Hamad",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scravy/node-hddserial/issues"
+  },
+  "homepage": "https://github.com/scravy/node-hddserial"
+}

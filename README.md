@@ -1,0 +1,1 @@
+hdd serial number
