@@ -2,11 +2,11 @@
 
 var hddSerialNumber = require('./index');
 
-//return json
+//return array
 hddSerialNumber.all(function (error,data) {
 
     if(!error){
-        console.log(JSON.stringify(data, null, 2));
+        console.log(data);
     }
 
 });

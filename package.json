@@ -1,6 +1,6 @@
 {
   "name": "hddserial",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Get the HDD,SDD Serial Number for Node js.",
   "main": "index.js",
   "scripts": {
