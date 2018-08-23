@@ -6,9 +6,9 @@ works on `Linux`,`Windows`
 
 Testing
 -----
-Windows [windows xp,windows 7,windows 10]
+Windows testing on [windows 7,windows 10,Server 2008,2012]
 
-Linux [ubuntu 16.10]
+Linux testing on [ubuntu 16.10,CentOS 7.5]
 
 Usage
 -----
