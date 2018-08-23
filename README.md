@@ -1,14 +1,16 @@
-Retrieve hdd serial number in Linux,Windows, and soon OS X.
+Retrieve hdd serial number in Linux,Windows,MacOS.
 
 **Features:**
 -----
-works on `Linux`,`Windows`
+works on `Linux`,`Windows`,`MacOS`
 
 Testing
 -----
-Windows testing on [windows 7,windows 10,Server 2008,2012]
+Windows : [windows 7,windows 10,Server 2008,2012]
 
-Linux testing on [ubuntu 16.10,CentOS 7.5]
+Linux   : [ubuntu 16.10,CentOS 7.5]
+
+MacOS   : [MacOS Sierra 10.12]
 
 Usage
 -----
