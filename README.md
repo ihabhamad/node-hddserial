@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial?ref=badge_shield)
+
 Retrieve hdd serial number in Linux,Windows,MacOS.
 
 **Features:**
@@ -63,3 +65,7 @@ Output array
 ```JavaScript
 ['5L09TDHA','N31FNPH8','6YD3W4E9']
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial?ref=badge_large)
