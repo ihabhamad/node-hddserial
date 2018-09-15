@@ -1,7 +1,7 @@
 {
   "name": "hddserial",
   "version": "0.0.6",
-  "description": "Get the HDD,SDD Serial Number for Node js on Windows and Linux and MacOS.",
+  "description": "Get the HDD,SDD Serial Number for Node js io.js on Windows and Linux and MacOS.",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"
