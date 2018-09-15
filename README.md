@@ -1,7 +1,6 @@
-Retrieve hdd serial number in Linux,Windows,MacOS.
-
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial?ref=badge_shield)
 
+Retrieve hdd serial number in Linux,Windows,MacOS.
 
 **Features:**
 -----
@@ -99,4 +98,5 @@ hddserial.check('5L09TDHA',function (err, success) {
 });
 ```
 
+## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial?ref=badge_large)
