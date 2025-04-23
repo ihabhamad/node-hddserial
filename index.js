@@ -9,7 +9,7 @@ var _getSerialNumber;
 switch (os.platform()) {
 
     case 'win32':
-        _getSerialNumber = require('./lib/windows.js');
+        _getSerialNumber = require('./lib/windows/index');
         break;
 
     case 'linux':
