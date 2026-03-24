@@ -1,6 +1,6 @@
 {
   "name": "hddserial",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Cross-platform disk serial retrieval for Node.js.",
   "main": "index.js",
   "files": [
