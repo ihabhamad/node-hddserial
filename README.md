@@ -1,102 +1,70 @@
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial?ref=badge_shield)
+# hddserial
 
-Retrieve hdd serial number in Linux,Windows,MacOS.
+Retrieve physical disk serial numbers on Linux, Windows, and macOS.
 
-**Features:**
------
-works on `Linux`,`Windows`,`MacOS`
+This package is intentionally focused on storage serial retrieval only.
+It does not expose CPU IDs, MAC addresses, motherboard identifiers, or machine UUIDs.
 
-Testing
------
-Windows : [windows 7,windows 10,Server 2008,2012]
+## Install
 
-Linux   : [ubuntu 16.10,CentOS 7.5]
-
-MacOS   : [MacOS Sierra 10.12]
-
-Usage
------
-
-```BASH
-npm install --save hddserial
+```bash
+npm install hddserial
 ```
 
-```JavaScript
-var hddserial = require('hddserial');
-```
-Note
---------------
-hddserial library get a Serial Number from Physical Hard disk drives not logical or volume 
-    
-Examples
---------------
-     
-    .one(hdd-index, callback) → string //hdd-index numaric value 0 equals first hdd on pc or os hdd you can use .first
-    .first(callback) → string  
-    .all(callback)        → { array of strings index of array = index of hdd }
-    .check('Serial Number',callback)  → boolean true if exist
-    .isfirst('Serial Number',callback)  → boolean true if is exist and is first
+## API
 
----
-Retrieves the HDD Serial Number for index 1 or second HDD {sdb on linux}.
+- `first()` -> `Promise<string>`
+- `all()` -> `Promise<string[]>`
+- `one(index)` -> `Promise<string>`
+- `check(serial)` -> `Promise<boolean>`
 
-```
-indexes begin from 0
-0 : first  HDD
-1 : socend HDD
-2 : therd  HDD
-```
-```JavaScript
-hddserial.one(1,function (err, serial) {
-  console.log("hdd serial for first hdd : %s", serial);  
-});
-```
-Output String
-```
-→ hdd serial for hdd with index 1 : N31FNPH8
-```
-Retrieves the HDD Serial Number  for index 0 or first HDD {sda on linux}.
-```JavaScript
-hddserial.first(function (err, serial) {
-  console.log("hdd serial for first hdd : %s", serial);  
-});
-```
-Output String
-```
-→ hdd serial for first hdd : 5L09TDHA
-```
-Retrieves all HDDs Serial Numbers {sda,sdb,sdc on linux}.
+All methods also support Node-style callbacks for backward compatibility.
 
-```JavaScript
-hddserial.all(function (err, serial) {
+### Promise usage
+
+```js
+const hddserial = require('hddserial');
+
+async function run() {
+  const first = await hddserial.first();
+  const all = await hddserial.all();
+  const second = await hddserial.one(1);
+  const exists = await hddserial.check(first);
+
+  console.log({ first, all, second, exists });
+}
+
+run().catch(console.error);
+```
+
+### Callback usage
+
+```js
+const hddserial = require('hddserial');
+
+hddserial.first((err, serial) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+
   console.log(serial);
 });
 ```
-Output array
-```JavaScript
-['5L09TDHA','N31FNPH8','6YD3W4E9']
-```
-check the Serial Number founded is first serial.
 
-```JavaScript
-hddserial.isfirst('5L09TDHA',function (err, success) {
-  if(success){
-      console.log("true Serial 5L09TDHA is first");
-  }else{
-      console.log("false Serial 5L09TDHA is not a first");
-  }
-});
-```
-check if Serial Number founded in your system.
-```JavaScript
-hddserial.check('5L09TDHA',function (err, success) {
-  if(success){
-      console.log("true Serial 5L09TDHA founded !!");
-  }else{
-      console.log("false Serial 5L09TDHA is not a found in all hdds");
-  }
-});
-```
+## Behavior Notes
+
+- Serial values are normalized to reduce OS-specific formatting noise.
+- Results are deduplicated and returned in stable order.
+- `one(index)` uses zero-based indexing.
+- `check(serial)` compares normalized serial values.
+
+## Supported Platforms
+
+- Linux
+- Windows
+- macOS
 
 ## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fihabhamad%2Fnode-hddserial?ref=badge_large)
+
+MIT

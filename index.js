@@ -1,94 +1,116 @@
-/* jshint node: true */
 'use strict';
 
-var os = require('os');
+const os = require('node:os');
+const { normalizeSerial, normalizeSerialList } = require('./lib/utils');
 
-var lib = {};
+const providers = {
+  linux: require('./lib/providers/linux'),
+  win32: require('./lib/providers/windows'),
+  darwin: require('./lib/providers/macos'),
+  sunos: require('./lib/providers/macos')
+};
 
-var _getSerialNumber;
-switch (os.platform()) {
+function withOptionalCallback(promise, callback) {
+  if (typeof callback !== 'function') {
+    return promise;
+  }
 
-    case 'win32':
-        _getSerialNumber = require('./lib/windows/index');
-        break;
+  promise.then(
+    (value) => callback(null, value),
+    (error) => callback(error, null)
+  );
 
-    case 'linux':
-        _getSerialNumber = require('./lib/linux.js');
-        break;
-
-    case 'darwin':
-    case 'sunos':
-        _getSerialNumber = require('./lib/macosx.js');
-        break;
-
-    default:
-        console.warn("node-HddSerialNumber: Unkown os.platform(), defaulting to `linux'.");
-        _getSerialNumber = require('./lib/linux.js');
-        break;
-
+  return undefined;
 }
 
-lib.first = function (callback) {
+function getProvider(platform) {
+  return providers[platform] || providers.linux;
+}
 
-    if (typeof callback === 'function') {
-        _getSerialNumber(0, callback);
+function createApi(getSerials) {
+  async function allAsync() {
+    const serials = await getSerials();
+    const normalized = normalizeSerialList(serials);
+
+    if (!normalized.length) {
+      throw new Error('No disk serial found');
     }
 
-    return null;
-};
-lib.all = function (callback) {
+    return normalized;
+  }
 
-    if (typeof callback === 'function') {
-        _getSerialNumber(callback);
+  const api = {
+    all(callback) {
+      return withOptionalCallback(allAsync(), callback);
+    },
+
+    first(callback) {
+      return withOptionalCallback(this.one(0), callback);
+    },
+
+    one(index, callback) {
+      if (typeof index === 'function') {
+        return this.all(index);
+      }
+
+      const promise = (async () => {
+        if (!Number.isInteger(index) || index < 0) {
+          throw new TypeError('Index must be a non-negative integer');
+        }
+
+        const serials = await allAsync();
+        const serial = serials[index];
+
+        if (!serial) {
+          throw new RangeError('Disk index out of range');
+        }
+
+        return serial;
+      })();
+
+      return withOptionalCallback(promise, callback);
+    },
+
+    check(serial, callback) {
+      const promise = (async () => {
+        if (typeof serial !== 'string') {
+          throw new TypeError('Serial must be a string');
+        }
+
+        const normalizedInput = normalizeSerial(serial);
+        if (!normalizedInput) {
+          return false;
+        }
+
+        const serials = await allAsync();
+        return serials.includes(normalizedInput);
+      })();
+
+      return withOptionalCallback(promise, callback);
+    },
+
+    isfirst(serial, callback) {
+      const promise = (async () => {
+        const first = await this.first();
+        return normalizeSerial(serial) === first;
+      })();
+
+      return withOptionalCallback(promise, callback);
     }
+  };
 
-    return null;
-};
-lib.one = function (index, callback) {
+  return api;
+}
 
-    if (typeof index === 'function') {
-        _getSerialNumber(index);
-    } else {
-        _getSerialNumber(index, callback);
-    }
+const api = createApi(async () => {
+  const provider = getProvider(os.platform());
+  return provider.getSerials();
+});
 
-};
-
-lib.check = function(SerialNumber,callback){
-    if (typeof callback === 'function' && typeof SerialNumber === "string") {
-        _getSerialNumber(function (error, Serials) {
-            if (error) {
-                callback(error, null);
-            } else {
-                if (Serials.indexOf(SerialNumber) !== -1) {
-                    callback(null, true);
-                } else {
-                    callback(null, false);
-                }
-            }
-        });
-
-    }else{
-        return null;
-    }
-};
-lib.isfirst = function (SerialNumber, callback) {
-    if (typeof callback === 'function' && typeof SerialNumber === "string") {
-        _getSerialNumber(0, function (error, Serial) {
-            if (error) {
-                callback(error, null);
-            } else {
-                if (Serial === SerialNumber) {
-                    callback(null, true);
-                } else {
-                    callback(null, false);
-                }
-            }
-        });
-
-    }else{
-        return null;
-    }
+api._createApi = createApi;
+api._utils = {
+  normalizeSerial,
+  normalizeSerialList
 };
 
-module.exports = lib;
+module.exports = api;

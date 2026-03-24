@@ -1,84 +1,66 @@
 'use strict';
 
-var hddSerialNumber = require('./index');
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const hddserial = require('./index');
 
-//return array | object
-hddSerialNumber.all(function (error,SerialNumbers) {
+test('normalize helpers clean and deduplicate serial values', () => {
+  assert.equal(hddserial._utils.normalizeSerial(' " ab c-01 " '), 'ABC-01');
 
-    if(error){
-      throw error;
-    }else{
-       if(typeof SerialNumbers !== "object" && SerialNumbers.length > 0){
-           throw new Error("error data type or be not empty");
-       }
-        console.log(SerialNumbers);
-    }
-
-});
-//return string
-hddSerialNumber.one(0,function (error,SerialNumber) {
-    if(error){
-        throw new Error(error);
-    }else{
-        if(typeof SerialNumber !== "string" && SerialNumber.length > 0){
-            throw new Error("error data type or be not empty");
-        }
-        console.log(SerialNumber);
-    }
-
+  assert.deepEqual(
+    hddserial._utils.normalizeSerialList([' a1 ', 'A1', '', 'b2']),
+    ['A1', 'B2']
+  );
 });
 
-//return string
-hddSerialNumber.first(function (error,SerialNumber) {
+test('promise API returns normalized values', async () => {
+  const api = hddserial._createApi(async () => ['  abc  ', 'ABC', 'def']);
 
-    if(error){
-        throw new Error(error);
-    }else{
-        if(typeof SerialNumber !== "string" && SerialNumber.length > 0){
-            throw new Error("error data type or be not empty");
-        }
-        console.log(SerialNumber);
-    }
-
-});
-console.log(hddSerialNumber.first());
-//check if serial exist on hdds serials array;
-//used this function to test .first and .check functions works properly
-hddSerialNumber.first(function (error,SerialNumber) {
-
-    if(error){
-        throw new Error(error);
-    }else{
-        /*start check*/
-        hddSerialNumber.check(SerialNumber,function (error, success) {
-           if(success){
-               console.log('success');
-           }else{
-               throw new Error("error");
-           }
-       })
-       /*end check*/
-    }
-
-});
-//check if serial exist and is it first hdd serial (operating system hdd serial);
-//used this function to test .first and .isfirst functions works properly
- hddSerialNumber.first(function (error,SerialNumber) {
-
-    if(error){
-        throw new Error(error);
-    }else{
-        /*start check*/
-        hddSerialNumber.isfirst(SerialNumber,function (error, success) {
-            if(success){
-                console.log('success');
-            }else{
-                throw new Error("error");
-            }
-        })
-        /*end check*/
-    }
-
+  assert.deepEqual(await api.all(), ['ABC', 'DEF']);
+  assert.equal(await api.first(), 'ABC');
+  assert.equal(await api.one(1), 'DEF');
+  assert.equal(await api.check(' d e f '), true);
 });
 
+test('one(index) validates index', async () => {
+  const api = hddserial._createApi(async () => ['X1']);
 
+  await assert.rejects(api.one(-1), /Index must be a non-negative integer/);
+  await assert.rejects(api.one(4), /Disk index out of range/);
+});
+
+test('callback API remains supported', async () => {
+  const api = hddserial._createApi(async () => ['A1', 'B2']);
+
+  await new Promise((resolve, reject) => {
+    api.first((err, serial) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      try {
+        assert.equal(serial, 'A1');
+        resolve();
+      } catch (assertionError) {
+        reject(assertionError);
+      }
+    });
+  });
+
+  await new Promise((resolve, reject) => {
+    api.one((err, serials) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      try {
+        assert.deepEqual(serials, ['A1', 'B2']);
+        resolve();
+      } catch (assertionError) {
+        reject(assertionError);
+      }
+    });
+  });
+});
