@@ -67,6 +67,43 @@ hddserial.first((err, serial) => {
 - Windows
 - macOS
 
+## Cross-Platform Validation
+
+`hddserial` is validated in CI and real environments to ensure reliability across operating systems.
+
+### CI (GitHub Actions)
+
+- Operating systems: Linux (`ubuntu-latest`), Windows (`windows-latest`), macOS (`macos-latest`)
+- Node.js versions: 18, 20, 22
+- Checks: `npm ci`, package entry validation, `npm test`, runtime smoke test (no crash), `npm pack --dry-run`
+
+All CI matrix jobs are passing successfully.
+
+### Real Environment Testing
+
+- Windows 11 (physical machine): successfully retrieves disk serials and API behavior is verified
+- Ubuntu 24.04 (Proxmox VM): installs and runs correctly, API executes without errors
+
+### Limitations and Notes
+
+- Disk serial availability depends on operating system permissions, hardware type, storage drivers, and virtualization environment
+- Virtualized environments (for example Proxmox, KVM, Docker) may not expose real disk serials
+- The library returns available disk/storage serials reported by the operating system
+
+### Testing Summary
+
+| Environment | Result | Notes |
+| --- | --- | --- |
+| Windows 11 (Physical) | ✅ | Real disk serial detected |
+| Ubuntu 24.04 (VM) | ✅ | Tested successfully |
+| Linux (CI) | ✅ | Passed |
+| Windows (CI) | ✅ | Passed |
+| macOS (CI) | ✅ | Passed |
+
+### CI Status
+
+[![CI](https://github.com/ihabhamad/node-hddserial/actions/workflows/ci.yml/badge.svg)](https://github.com/ihabhamad/node-hddserial/actions/workflows/ci.yml)
+
 ## License
 
 MIT
