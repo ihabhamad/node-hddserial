@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - chore/add-ci-matrix
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20, 22]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Smoke test (no crash)
+        run: >-
+          node -e "const hddserial=require('./'); if (!hddserial || typeof hddserial.all !== 'function') { throw new Error('API load failed'); } hddserial.all().then(r=>{console.log('result:', r); process.exit(0);}).catch(e=>{console.log('non-fatal:', (e && e.message) ? e.message : e); process.exit(0);});"
+
+      - name: Validate package contents
+        run: npm pack --dry-run
