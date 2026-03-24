@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ihabhamad/node-hddserial.git"
+    "url": "git+https://github.com/ihabhamad/node-hddserial.git"
   },
   "keywords": [
     "node hdd",
@@ -38,5 +38,5 @@
   "bugs": {
     "url": "https://github.com/ihabhamad/node-hddserial/issues"
   },
-  "homepage": "https://github.com/ihabhamad/node-hddserial"
+  "homepage": "https://github.com/ihabhamad/node-hddserial#readme"
 }
