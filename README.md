@@ -1,9 +1,16 @@
 # hddserial
 
+![npm](https://img.shields.io/npm/v/hddserial)
+![node](https://img.shields.io/node/v/hddserial)
+
 Retrieve physical disk serial numbers on Linux, Windows, and macOS.
 
 This package is intentionally focused on storage serial retrieval only.
 It does not expose CPU IDs, MAC addresses, motherboard identifiers, or machine UUIDs.
+
+## Requirements
+
+- Node.js >= 18
 
 ## Install
 
@@ -11,46 +18,35 @@ It does not expose CPU IDs, MAC addresses, motherboard identifiers, or machine U
 npm install hddserial
 ```
 
-## API
-
-- `first()` -> `Promise<string>`
-- `all()` -> `Promise<string[]>`
-- `one(index)` -> `Promise<string>`
-- `check(serial)` -> `Promise<boolean>`
-
-All methods also support Node-style callbacks for backward compatibility.
-
-### Promise usage
+## Usage (Promise)
 
 ```js
 const hddserial = require('hddserial');
 
-async function run() {
-  const first = await hddserial.first();
-  const all = await hddserial.all();
-  const second = await hddserial.one(1);
-  const exists = await hddserial.check(first);
-
-  console.log({ first, all, second, exists });
-}
-
-run().catch(console.error);
+(async () => {
+  const serial = await hddserial.first();
+  console.log(serial);
+})();
 ```
 
-### Callback usage
+## Usage (Callback)
 
 ```js
 const hddserial = require('hddserial');
 
 hddserial.first((err, serial) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-
+  if (err) return console.error(err);
+  
   console.log(serial);
 });
 ```
+
+## Methods
+
+- `first()` -> returns first disk serial
+- `all()` -> returns all detected serials
+- `one(index)` -> returns serial at index
+- `check(serial)` -> checks if serial exists
 
 ## Behavior Notes
 
@@ -58,6 +54,12 @@ hddserial.first((err, serial) => {
 - Results are deduplicated and returned in stable order.
 - `one(index)` uses zero-based indexing.
 - `check(serial)` compares normalized serial values.
+
+## Limitations
+
+- Disk serial availability depends on OS and permissions
+- Some environments (Docker, VM, cloud) may not expose real disk serials
+- macOS and certain SSDs may return limited or no serial information
 
 ## Supported Platforms
 
